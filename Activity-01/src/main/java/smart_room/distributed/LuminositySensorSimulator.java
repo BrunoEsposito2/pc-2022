@@ -12,7 +12,7 @@ public class LuminositySensorSimulator  extends AbstractEventSource implements L
 	private String sensorId;
 	private LuminositySensorFrame frame;
 	
-	LuminositySensorSimulator(String sensorId){
+	public LuminositySensorSimulator(String sensorId){
 		this.sensorId = sensorId;
 	}
 	

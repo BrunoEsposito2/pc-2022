@@ -12,7 +12,7 @@ public class PresDetectSensorSimulator extends AbstractEventSource implements Pr
 	private String sensorId;
 	private PresenceDetectionFrame frame;
 	
-	PresDetectSensorSimulator(String sensorId){
+	public PresDetectSensorSimulator(String sensorId){
 		this.sensorId = sensorId;
 		isPresenceDetected = false;
 	}

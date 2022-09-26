@@ -3,7 +3,7 @@ package mqtt_tests;
 import io.vertx.core.Vertx;
 import io.vertx.mqtt.MqttServer;
 
-public class MQTTServer {
+public class MQTTVertxServer {
 
 	public static void main(String[] args) {
 

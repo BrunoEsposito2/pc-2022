@@ -11,7 +11,7 @@ public class LightDeviceSimulator implements LightDevice {
 	private LightSimFrame frame;
 	private String lightID;
 	
-	LightDeviceSimulator(String lightID){
+	public LightDeviceSimulator(String lightID){
 		this.lightID = lightID;
 	}
 	

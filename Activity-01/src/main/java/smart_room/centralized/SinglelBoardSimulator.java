@@ -1,3 +1,9 @@
+/**
+ * 
+ * Simulator/mock for a single system including
+ * a light device, a light sensor device and a presence detection sensor device
+ * 
+ */
 package smart_room.centralized;
 
 import smart_room.*;
@@ -9,7 +15,7 @@ public class SinglelBoardSimulator extends AbstractEventSource implements LightD
 	private double currentLuminosityLevel;
 	private boolean isPresenceDetected;
 
-	SinglelBoardSimulator(){	
+	public SinglelBoardSimulator(){	
 	}
 	
 	public void init() {
