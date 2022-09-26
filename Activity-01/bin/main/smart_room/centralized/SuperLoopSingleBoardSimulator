@@ -1,0 +1,23 @@
+package smart_room.centralized;
+
+import smart_room.Event;
+
+public class SuperLoopSingleBoardSimulator {
+
+    private static final double MIN_LUM = 0.1;
+    private static final double MAX_LUM = 1.0;
+
+    // Super-Loop
+    public static void main(String[] args) {
+        SinglelBoardSimulator board = new SinglelBoardSimulator();
+        board.init();
+
+        board.register((Event ev) -> {
+            if (ev instanceof PresenceDetected) {
+                System.out.println("Detected");
+            } 
+        });
+
+    }
+
+}
