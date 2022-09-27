@@ -2,8 +2,18 @@ package smart_room.delivery.distributed;
 
 import io.vertx.core.Vertx;
 import io.vertx.mqtt.MqttServer;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class RoomSensing {
+
+    private final static int PORT = 1883;
+    private final static String HOSTNAME = "broker.smart-room-mqtt.com";
+    private final static String TOPIC = "smart-room";
+    private final static int QoS = 2;
+    private final static String BROKER = "tcp://localhost:1883";
+    private final static String LIGHT_DEVICE_ID = "LightDevice";
+    private final static String LUMSENSOR_DEVICE_ID = "LumSensorDevice";
+    private final static String PRES_DETECT_DEVICE_ID = "PresDetectDevice";
 
     public static void main(String[] args) {
 
@@ -13,16 +23,6 @@ public class RoomSensing {
 
                     // shows main connect info
                     System.out.println("MQTT client [" + endpoint.clientIdentifier() + "] request to connect, clean session = " + endpoint.isCleanSession());
-
-                    if (endpoint.auth() != null) {
-                        System.out.println("[username = " + endpoint.auth().getUsername() + ", password = " + endpoint.auth().getPassword() + "]");
-                    }
-                    if (endpoint.will() != null) {
-                        System.out.println("[will topic = " + endpoint.will().getWillTopic() + " msg = " + new String(endpoint.will().getWillMessageBytes()) +
-                                " QoS = " + endpoint.will().getWillQos() + " isRetain = " + endpoint.will().isWillRetain() + "]");
-                    }
-
-                    System.out.println("[keep alive timeout = " + endpoint.keepAliveTimeSeconds() + "]");
 
                     // accept connection from the remote client
                     endpoint.accept(false);
@@ -39,6 +39,9 @@ public class RoomSensing {
                         ar.cause().printStackTrace();
                     }
                 });
+        new DistributedLightDevice(LIGHT_DEVICE_ID, TOPIC, BROKER, QoS).start();
+        new DistributedLumSensorDevice(LUMSENSOR_DEVICE_ID, TOPIC, BROKER, QoS).start();
+        new DistributedPresDetectDevice(PRES_DETECT_DEVICE_ID, TOPIC, BROKER, QoS).start();
     }
 }
 

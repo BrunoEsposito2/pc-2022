@@ -1,9 +1,6 @@
 package smart_room.delivery.distributed;
 
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class DistributedLightDevice extends Thread {
@@ -27,22 +24,29 @@ public class DistributedLightDevice extends Thread {
             MqttClient client = new MqttClient(broker, clientId, persistence);
             MqttConnectOptions connOpts = new MqttConnectOptions();
             connOpts.setCleanSession(true);
+
+            client.setCallback(new MqttCallback() {
+                @Override
+                public void connectionLost(Throwable cause) {
+                    System.out.println("LOST");
+                }
+
+                @Override
+                public void messageArrived(String topic, MqttMessage message) throws Exception {
+                    System.out.println("ARRIVED");
+                }
+
+                @Override
+                public void deliveryComplete(IMqttDeliveryToken token) {
+                    System.out.println("COMPLETED");
+                }
+            });
             log("Connecting to broker: " + broker);
             client.connect(connOpts);
             log("Connected");
 
-            client.subscribe(topic, (top, msg) -> {
-                byte[] payload = msg.getPayload();
+            client.subscribe(topic, qos);
 
-                /**
-                 * Define LightDevice logic
-                 */
-
-                System.out.println("[LightDevice RECEIVER] " + new String(payload));
-            });
-
-            client.disconnect();
-            log("Disconnected");
         } catch (MqttException me) {
             System.out.println("reason "+me.getReasonCode());
             System.out.println("msg "+me.getMessage());
