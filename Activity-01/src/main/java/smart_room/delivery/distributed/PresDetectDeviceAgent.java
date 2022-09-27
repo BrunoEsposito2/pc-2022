@@ -32,7 +32,7 @@ public class PresDetectDeviceAgent extends AbstractVerticle {
 
     @Override
     public void start() {
-        io.vertx.mqtt.MqttClient client = MqttClient.create(vertx);
+        MqttClient client = MqttClient.create(vertx);
 
         client.connect(port, hostname, c -> {
             log("PresDetectDevice connected");

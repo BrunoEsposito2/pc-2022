@@ -12,7 +12,7 @@ public class DistributedSmartRoom {
 
     public static void main(String[] args) {
         Vertx vertx = Vertx.vertx();
-        
+
         LightDeviceAgent lightDeviceAgent = new LightDeviceAgent(PORT, HOSTNAME, TOPIC, QoS);
         LumSensorDeviceAgent lumSensorDeviceAgent = new LumSensorDeviceAgent(PORT, HOSTNAME, TOPIC, QoS);
         PresDetectDeviceAgent presDetectDeviceAgent = new PresDetectDeviceAgent(PORT, HOSTNAME, TOPIC, QoS);
