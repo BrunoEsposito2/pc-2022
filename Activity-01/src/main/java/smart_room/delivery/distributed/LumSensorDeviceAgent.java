@@ -9,11 +9,11 @@ import smart_room.distributed.LuminositySensorSimulator;
 
 public class LumSensorDeviceAgent extends AbstractVerticle {
 
-    private int port;
-    private int qos;
-    private String hostname;
-    private String topic;
-    private LuminositySensorSimulator ls;
+    private final int port;
+    private final int qos;
+    private final String hostname;
+    private final String topic;
+    private final LuminositySensorSimulator ls;
 
     public LumSensorDeviceAgent(final int p, final String h, final String t, final int q) {
         this.port = p;
@@ -42,7 +42,6 @@ public class LumSensorDeviceAgent extends AbstractVerticle {
             });
         });
     }
-
 
     private void log(String msg) {
         System.out.println("[LumSensorDevice AGENT] "+msg);

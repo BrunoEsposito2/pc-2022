@@ -8,7 +8,6 @@ public class DistributedSmartRoom {
     private final static String HOSTNAME = "broker.mqtt-dashboard.com";
     private final static String TOPIC = "smart-room";
     private final static int QoS = 2;
-    private final static String BROKER = "tcp://localhost:1883";
 
     public static void main(String[] args) {
         Vertx vertx = Vertx.vertx();
