@@ -1,4 +1,4 @@
-package smart_room.api;
+package lamp_thing.consumers;
 
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -8,46 +8,47 @@ import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.WebSocket;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
+import lamp_thing.api.LampThingAPI;
 
 /**
- * Proxy to interact with a LightThing using HTTP protocol
+ * Proxy to interact with a LampThing using HTTP protocol
  * 
  * @author aricci
  *
  */
-public class LightThingProxy implements LightThingAPI {
+public class LampThingHTTPProxy implements LampThingAPI {
 
 	private Vertx vertx;
 	private WebClient client;
 
-	private String thingId;
 	private int thingPort;
 	private String thingHost;
 
-	private static final String PROPERTY_STATE = "/properties/state";
-	private static final String ACTION_ON = "/actions/on";
-	private static final String ACTION_OFF = "/actions/off";
-	private static final String EVENTS = "/events";
-		
-	public LightThingProxy(String thingId, String thingHost, int thingPort){
-		this.thingId = thingId;
+	private static final String TD = "/api";
+	private static final String PROPERTY_STATE = "/api/properties/state";
+	private static final String ACTION_ON = "/api/actions/on";
+	private static final String ACTION_OFF = "/api/actions/off";
+	private static final String EVENTS = "/api/events";
+			
+	public LampThingHTTPProxy(String thingHost, int thingPort){
 		this.thingPort = thingPort;
 		this.thingHost = thingHost;
-		vertx = Vertx.vertx();
-		client = WebClient.create(vertx);
+	}
+
+	public Future<Void> setup(Vertx vertx) {
+		this.vertx = vertx;
+		Promise<Void> promise = Promise.promise();
+		vertx.executeBlocking(p -> {
+			client = WebClient.create(vertx);
+			promise.complete();
+		});
+		return promise.future();
 	}
 	
-
-	@Override
-	public String getId() {
-		return thingId;
-	}
-
-	@Override
 	public Future<String> getState() {
 		Promise<String> promise = Promise.promise();
 		client
-			.get(this.thingPort, thingHost, this.PROPERTY_STATE)
+			.get(this.thingPort, thingHost, PROPERTY_STATE)
 			.send()
 			.onSuccess(response -> {
 				JsonObject reply = response.bodyAsJsonObject();
@@ -59,12 +60,11 @@ public class LightThingProxy implements LightThingAPI {
 			});
 		return promise.future();
 	}
-
-	@Override
+	
 	public Future<Void> on() {
 		Promise<Void> promise = Promise.promise();
 		client
-			.post(this.thingPort, thingHost, this.ACTION_ON)
+			.post(this.thingPort, thingHost, ACTION_ON)
 			.send()
 			.onSuccess(response -> {
 				promise.complete(null);
@@ -74,12 +74,11 @@ public class LightThingProxy implements LightThingAPI {
 			});
 		return promise.future();
 	}
-
-	@Override
+	
 	public Future<Void> off() {
 		Promise<Void> promise = Promise.promise();
 		client
-			.post(this.thingPort, thingHost, this.ACTION_OFF)
+			.post(this.thingPort, thingHost, ACTION_OFF)
 			.send()
 			.onSuccess(response -> {
 				promise.complete(null);
@@ -90,7 +89,6 @@ public class LightThingProxy implements LightThingAPI {
 		return promise.future();
 	}
 
-	
 	public Future<Void> subscribe(Handler<JsonObject> handler) {
 		Promise<Void> promise = Promise.promise();
 		HttpClient cli = vertx.createHttpClient();
@@ -106,11 +104,26 @@ public class LightThingProxy implements LightThingAPI {
 		});
 		return promise.future();			
 	}
+	
 
-
-	protected void log(String msg) {
-		System.out.println("[LightThingProxy]["+System.currentTimeMillis()+"] " + msg);
+	@Override
+	public Future<JsonObject> getTD() {
+		Promise<JsonObject> promise = Promise.promise();
+		client
+			.get(this.thingPort, thingHost, TD)
+			.send()
+			.onSuccess(response -> {
+				JsonObject reply = response.bodyAsJsonObject();
+				promise.complete(reply);
+			})
+			.onFailure(err -> {
+				promise.fail("Something went wrong " + err.getMessage());
+			});
+		return promise.future();
 	}
-
+	
+	protected void log(String msg) {
+		System.out.println("[LampThingHTTPProxy]["+System.currentTimeMillis()+"] " + msg);
+	}
 
 }

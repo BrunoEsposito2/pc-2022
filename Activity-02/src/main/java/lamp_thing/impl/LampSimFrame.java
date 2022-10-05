@@ -1,4 +1,4 @@
-package smart_room.light_thing;
+package lamp_thing.impl;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -9,12 +9,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-class LightSimFrame extends JFrame {		
+class LampSimFrame extends JFrame {		
 	
 	private boolean isOn;
 	private JPanel mainPanel;
 	
-	public LightSimFrame(String name){
+	public LampSimFrame(String name){
 		setTitle("Light:  " + name);
 		setSize(200,160);
 		mainPanel = new LightPanel(200,160);

@@ -1,4 +1,4 @@
-package smart_room.light_thing;
+package lamp_thing.impl;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -7,7 +7,7 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import smart_room.api.LightThingAPI;
+import lamp_thing.api.LampThingAPI;
 
 /**
  * 
@@ -18,17 +18,17 @@ import smart_room.api.LightThingAPI;
  * @author aricci
  *
  */
-public class LightThingService extends AbstractVerticle {
+public class LampThingService extends AbstractVerticle {
 
-	private LightThingAPI model;
+	private LampThingAPI model;
 	private List<ThingAbstractAdapter> adapters;
 	
-	private int port;
+	public static final int HTTP_PORT = 8888;
+	public static final int MQTT_PORT = 1883;
 	
-	public LightThingService(LightThingAPI model, int port) {
+	public LampThingService(LampThingAPI model) {
 		this.model = model;
 		adapters = new LinkedList<ThingAbstractAdapter>();
-		this.port = port;
 	}
 	
 	@Override
@@ -43,12 +43,13 @@ public class LightThingService extends AbstractVerticle {
 	 *  	 
 	 */
 	protected void installAdapters(Promise<Void> promise) {		
+	
 		ArrayList<Future> allFutures = new ArrayList<Future>();		
 		try {
 			/*
 			 * Installing only the HTTP adapter.
 			 */
-			LightThingHTTPAdapter httpAdapter = new LightThingHTTPAdapter(model, port, this.getVertx());
+			LampThingHTTPAdapter httpAdapter = new LampThingHTTPAdapter(model, "localhost", HTTP_PORT, this.getVertx());
 			Promise<Void> p = Promise.promise();
 			httpAdapter.setupAdapter(p);
 			Future<Void> fut = p.future();
@@ -61,6 +62,25 @@ public class LightThingService extends AbstractVerticle {
 			});
 		} catch (Exception ex) {
 			log("HTTP adapter installation failed.");
+		}
+				
+		try {
+			/*
+			 * Installing MQTT adapter.
+			 */
+			LampThingMQTTAdapter mqttAdapter = new LampThingMQTTAdapter(model, "localhost", MQTT_PORT, this.getVertx());
+			Promise<Void> p = Promise.promise();
+			mqttAdapter.setupAdapter(p);
+			Future<Void> fut = p.future();
+			allFutures.add(fut);
+			fut.onSuccess(res -> {
+				log("MQTT adapter installed.");
+				adapters.add(mqttAdapter);
+			}).onFailure(f -> {
+				log("MQTT adapter not installed.");
+			});
+		} catch (Exception ex) {
+			log("MQTT adapter installation failed.");
 		}
 		
 		CompositeFuture.all(allFutures).onComplete(res -> {

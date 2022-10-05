@@ -1,4 +1,4 @@
-package smart_room.api;
+package lamp_thing.api;
 
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -10,9 +10,14 @@ import io.vertx.core.json.JsonObject;
  * @author aricci
  *
  */
-public interface LightThingAPI {
+public interface LampThingAPI {
 	
-	String getId();
+	/**
+	 * Get the TD
+	 * 
+	 * @return
+	 */
+	Future<JsonObject> getTD();
 	
 	/* properties */
 

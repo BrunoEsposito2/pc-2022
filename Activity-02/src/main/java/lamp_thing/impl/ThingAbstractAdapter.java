@@ -1,4 +1,4 @@
-package smart_room.light_thing;
+package lamp_thing.impl;
 
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;

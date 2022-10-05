@@ -2,21 +2,21 @@
  * Simulator/mock for a light device
  * 
  */
-package smart_room.light_thing;
+package lamp_thing.impl;
 
 import smart_room.*;
 
-public class LightDeviceSimulator implements LightDevice {
+public class LampDeviceSimulator implements LightDevice {
 
-	private LightSimFrame frame;
+	private LampSimFrame frame;
 	private String lightID;
 	
-	public LightDeviceSimulator(String lightID){
+	public LampDeviceSimulator(String lightID){
 		this.lightID = lightID;
 	}
 	
 	public void init() {
-		frame = new LightSimFrame(lightID);
+		frame = new LampSimFrame(lightID);
 		frame.display();
 	}
 	
