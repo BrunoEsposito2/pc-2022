@@ -5,7 +5,7 @@ import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 
 /**
- * Toy LightThing API 
+ * Toy LightThing API -> (Port part)
  *   
  * @author aricci
  *
