@@ -1,4 +1,4 @@
-package presenceDetector_thing.impl;
+package delivery.presenceDetector_thing.model;
 
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -6,7 +6,7 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import presenceDetector_thing.api.PresenceDetectorThingAPI;
+import delivery.presenceDetector_thing.api.PresenceDetectorThingAPI;
 
 /**
  * 
@@ -18,7 +18,7 @@ public class PresenceDetectorThingModel implements PresenceDetectorThingAPI {
 
 	private Vertx vertx;
 
-	private String state;
+	private Boolean isPresenceDetected;
 
 	private String thingId;
 	private JsonObject td;
@@ -29,7 +29,7 @@ public class PresenceDetectorThingModel implements PresenceDetectorThingAPI {
 		log("Creating the presence detector thing simulator.");
 		this.thingId = thingId;
 		
-	    state = "notDetected";
+	    isPresenceDetected = false;
 	    
 		pds = new PresenceDetectorSimulator(thingId);
 		pds.init();
@@ -58,31 +58,13 @@ public class PresenceDetectorThingModel implements PresenceDetectorThingAPI {
 		JsonObject props = new JsonObject();
 		td.put("properties", props);
 		JsonObject state = new JsonObject();
-		props.put("state", state);		
+		props.put("presenceDetected", state);
 		state.put("type", "string");
 		state.put("forms", new JsonArray());
 				
 		/* actions */
 		
-		JsonObject actions = new JsonObject();
-		td.put("actions", actions);
-		JsonObject startDetection = new JsonObject();
-		actions.put("startDetection", startDetection);
-		startDetection.put("forms", new JsonArray());
-		
 		/* events */
-		
-		JsonObject events = new JsonObject();
-		td.put("events", events);
-		JsonObject presenceDetected = new JsonObject();
-		events.put("presenceDetected", presenceDetected);
-		JsonObject data = new JsonObject();
-		presenceDetected.put("data", data);
-		JsonObject dataType = new JsonObject();
-		data.put("type", dataType);
-		dataType.put("state", "string");
-		dataType.put("timestamp", "decimal"); // better would be: "time"
-		presenceDetected.put("forms",  new JsonArray());
 
 	}
 
@@ -93,32 +75,12 @@ public class PresenceDetectorThingModel implements PresenceDetectorThingAPI {
 	}
 
 	@Override
-	public Future<String> getState() {
-		Promise<String> p = Promise.promise();
+	public Future<Boolean> presenceDetected() {
+		Promise<Boolean> p = Promise.promise();
 		synchronized (this) {
-			p.complete(state);
+			p.complete(isPresenceDetected);
 		}
 		return p.future();
-	}
-
-	@Override
-	public Future<Void> startDetection() {
-		Promise<Void> p = Promise.promise();
-		pds.startDetection();
-		state = "startDetection";
-		this.notifyNewPropertyStatus();
-		p.complete();
-		return p.future();
-	}
-	
-	private void notifyNewPropertyStatus() {
-	    JsonObject ev = new JsonObject();
-		ev.put("event", "presenceDetected");
-	    JsonObject data = new JsonObject();
-		data.put("state", state);
-		ev.put("data", data);			
-		ev.put("timestamp", System.currentTimeMillis());
-		this.generateEvent(ev);
 	}
 
 	private void generateEvent(JsonObject ev) {

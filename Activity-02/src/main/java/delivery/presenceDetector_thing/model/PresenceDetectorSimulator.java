@@ -2,8 +2,9 @@
  * Simulator/mock for a presence detector device
  * 
  */
-package presenceDetector_thing.impl;
+package delivery.presenceDetector_thing.model;
 
+import delivery.presenceDetector_thing.view.PresenceDetectorSimFrame;
 import smart_room.Controller;
 import smart_room.PresenceDetectionDevice;
 
@@ -19,11 +20,6 @@ public class PresenceDetectorSimulator implements PresenceDetectionDevice {
 	public void init() {
 		frame = new PresenceDetectorSimFrame(pDetectorID);
 		frame.display();
-	}
-	
-	@Override
-	public void startDetection() {
-
 	}
 
 	@Override

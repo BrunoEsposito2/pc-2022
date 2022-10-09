@@ -3,7 +3,7 @@ package delivery.lamp_thing.view;
 import javax.swing.*;
 import java.awt.*;
 
-class LampSimFrame extends JFrame {		
+public class LampSimFrame extends JFrame {
 	
 	private boolean isOn;
 	private JPanel mainPanel;

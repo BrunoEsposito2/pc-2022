@@ -1,4 +1,4 @@
-package presenceDetector_thing.impl;
+package delivery.presenceDetector_thing.model;
 
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -12,7 +12,7 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 ;
 import common.ThingAbstractAdapter;
-import presenceDetector_thing.api.PresenceDetectorThingAPI;
+import delivery.presenceDetector_thing.api.PresenceDetectorThingAPI;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -28,8 +28,7 @@ public class PresenceDetectorThingHTTPAdapter extends ThingAbstractAdapter<Prese
 	private static final int DONE = 201;
 
 	private static final String TD = "/api";
-	private static final String PROPERTY_STATE = "/api/properties/state";
-	private static final String START_DETECTION = "/api/actions/startDetection";
+	private static final String PRESENCE_DETECTED = "/api/properties/presenceDetected";
 	private static final String EVENTS = "/api/events";
 
 	// event support
@@ -49,8 +48,7 @@ public class PresenceDetectorThingHTTPAdapter extends ThingAbstractAdapter<Prese
 			router = Router.router(this.getVertx());
 			try {
 				router.get(TD).handler(this::handleGetTD);
-				router.get(PROPERTY_STATE).handler(this::handleGetPropertyState);
-				router.post(START_DETECTION).handler(this::handleStartDetection);
+				router.get(PRESENCE_DETECTED).handler(this::handleGetPresenceDetected);
 
 				populateTD(td);
 
@@ -107,41 +105,21 @@ public class PresenceDetectorThingHTTPAdapter extends ThingAbstractAdapter<Prese
 		JsonArray stateForms = 
 				td
 				.getJsonObject("properties")
-				.getJsonObject("state")
+				.getJsonObject("presenceDetected")
 				.getJsonArray("forms");
 
 		JsonObject httpStateForm = new JsonObject();
-		httpStateForm.put("href", "http://" + thingHost + ":" + thingPort + "/api/properties/state");
+		httpStateForm.put("href", "http://" + thingHost + ":" + thingPort + "/api/properties/presenceDetected");
 		stateForms.add(httpStateForm);
-
-		JsonArray onForms = 
-				td
-				.getJsonObject("actions")
-				.getJsonObject("startDetection")
-				.getJsonArray("forms");
-
-		JsonObject httpOnForm = new JsonObject();
-		httpOnForm.put("href", "http://" + thingHost + ":" + thingPort + "/api/actions/startDetection");
-		onForms.add(httpOnForm);
-
-		JsonArray stateChangedForms = 
-				td
-				.getJsonObject("events")
-				.getJsonObject("stateChanged")
-				.getJsonArray("forms");
-
-		JsonObject httpStateChangedForm = new JsonObject();
-		httpStateChangedForm.put("href", "http://" + thingHost + ":" + thingPort + "/api/events");
-		stateChangedForms.add(httpStateChangedForm);
 	}
 
-	protected void handleGetPropertyState(RoutingContext ctx) {
+	protected void handleGetPresenceDetected(RoutingContext ctx) {
 		HttpServerResponse res = ctx.response();
 		res.putHeader("Content-Type", "application/json");
 		JsonObject reply = new JsonObject();
-		Future<String> fut = this.getModel().getState();
+		Future<Boolean> fut = this.getModel().presenceDetected();
 		fut.onSuccess(status -> {
-			reply.put("state", status);
+			reply.put("presenceDetected", status);
 			res.end(reply.toBuffer());
 		});
 	}
@@ -152,15 +130,6 @@ public class PresenceDetectorThingHTTPAdapter extends ThingAbstractAdapter<Prese
 		Future<JsonObject> fut = this.getModel().getTD();
 		fut.onSuccess(td -> {
 			res.end(td.toBuffer());
-		});
-	}
-
-	protected void handleStartDetection(RoutingContext ctx) {
-		HttpServerResponse res = ctx.response();
-		log("Start Detection request.");
-		Future<Void> fut = this.getModel().startDetection();
-		fut.onSuccess(ret -> {
-			res.setStatusCode(DONE).end();
 		});
 	}
 
