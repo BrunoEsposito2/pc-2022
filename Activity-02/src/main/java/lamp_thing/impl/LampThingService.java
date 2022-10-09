@@ -13,7 +13,7 @@ import lamp_thing.api.LampThingAPI;
 
 /**
  * 
- * Light Thing Service 
+ * Light Thing Service -> (Exagonal part with two kinds of adapters: HTTPAdapter and MQTTAdapter)
  * 
  * - enabling the interaction with a light thing
  * 

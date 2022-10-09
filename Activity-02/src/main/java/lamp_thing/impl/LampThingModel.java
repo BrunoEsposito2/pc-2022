@@ -10,14 +10,16 @@ import lamp_thing.api.LampThingAPI;
 
 /**
  * 
- * Behaviour of the Lamp Thing 
+ * Behaviour of the Lamp Thing --> (Business model part)
  * 
  * @author aricci
  *
  */
 public class LampThingModel implements LampThingAPI {
 
-	private Vertx vertx;
+	private Vertx vertx; // solo perché supporta pienamente la programmazione asincrona, altrimenti avrei potuto sfruttare
+						// un linguaggio diverso da java con le stesse caratteristiche: in quel caso non avrei quindi usato Vertx
+						// come in questo caso.
 
 	private String state;
 	
