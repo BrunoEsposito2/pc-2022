@@ -15,9 +15,13 @@ public class RunLampThingService {
 
 		LampThingModel model = new LampThingModel("MyLamp");
 		model.setup(vertx);
+
+
 		
-		LampThingService service = new LampThingService(model);
-		vertx.deployVerticle(service);
+		//LampThingService service = new LampThingService(model);
+		//vertx.deployVerticle(service);
+
+		System.out.println(model.getTD());
 	}
 
 }

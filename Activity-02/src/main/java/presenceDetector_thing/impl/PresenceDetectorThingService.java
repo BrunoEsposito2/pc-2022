@@ -1,34 +1,31 @@
-package lamp_thing.impl;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+package presenceDetector_thing.impl;
 
 import common.ThingAbstractAdapter;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import lamp_thing.api.LampThingAPI;
+import presenceDetector_thing.api.PresenceDetectorThingAPI;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 
- * Light Thing Service 
+ * Presence Detector Thing Service
  * 
- * - enabling the interaction with a light thing
- * 
- * @author aricci
- *
+ * - enabling the interaction with a presence detector thing
  */
-public class LampThingService extends AbstractVerticle {
+public class PresenceDetectorThingService extends AbstractVerticle {
 
-	private LampThingAPI model;
+	private PresenceDetectorThingAPI model;
 	private List<ThingAbstractAdapter> adapters;
-	
+
 	public static final int HTTP_PORT = 8888;
-	public static final int MQTT_PORT = 1883;
-	
-	public LampThingService(LampThingAPI model) {
+	//public static final int MQTT_PORT = 1883;
+
+	public PresenceDetectorThingService(PresenceDetectorThingAPI model) {
 		this.model = model;
 		adapters = new LinkedList<ThingAbstractAdapter>();
 	}
@@ -51,7 +48,7 @@ public class LampThingService extends AbstractVerticle {
 			/*
 			 * Installing only the HTTP adapter.
 			 */
-			LampThingHTTPAdapter httpAdapter = new LampThingHTTPAdapter(model, "localhost", HTTP_PORT, this.getVertx());
+			PresenceDetectorThingHTTPAdapter httpAdapter = new PresenceDetectorThingHTTPAdapter(model, "localhost", HTTP_PORT, this.getVertx());
 			Promise<Void> p = Promise.promise();
 			httpAdapter.setupAdapter(p);
 			Future<Void> fut = p.future();
@@ -66,10 +63,10 @@ public class LampThingService extends AbstractVerticle {
 			log("HTTP adapter installation failed.");
 		}
 				
-		try {
-			/*
+		/*try {
+			*//*
 			 * Installing MQTT adapter.
-			 */
+			 *//*
 			LampThingMQTTAdapter mqttAdapter = new LampThingMQTTAdapter(model, "localhost", MQTT_PORT, this.getVertx());
 			Promise<Void> p = Promise.promise();
 			mqttAdapter.setupAdapter(p);
@@ -83,7 +80,7 @@ public class LampThingService extends AbstractVerticle {
 			});
 		} catch (Exception ex) {
 			log("MQTT adapter installation failed.");
-		}
+		}*/
 		
 		CompositeFuture.all(allFutures).onComplete(res -> {
 			log("Adapters installed.");

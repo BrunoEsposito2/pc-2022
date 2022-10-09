@@ -1,22 +1,23 @@
-package lamp_thing.impl;
+package presenceDetector_thing.impl;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-
-import common.ThingAbstractAdapter;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.http.ServerWebSocket;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.http.ServerWebSocket;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import lamp_thing.api.LampThingAPI;
+;
+import common.ThingAbstractAdapter;
+import presenceDetector_thing.api.PresenceDetectorThingAPI;
 
-public class LampThingHTTPAdapter extends ThingAbstractAdapter<LampThingAPI> {
+import java.util.Iterator;
+import java.util.LinkedList;
+
+public class PresenceDetectorThingHTTPAdapter extends ThingAbstractAdapter<PresenceDetectorThingAPI> {
 
 	private HttpServer server;
 	private Router router;
@@ -28,14 +29,13 @@ public class LampThingHTTPAdapter extends ThingAbstractAdapter<LampThingAPI> {
 
 	private static final String TD = "/api";
 	private static final String PROPERTY_STATE = "/api/properties/state";
-	private static final String ACTION_ON = "/api/actions/on";
-	private static final String ACTION_OFF = "/api/actions/off";
+	private static final String START_DETECTION = "/api/actions/startDetection";
 	private static final String EVENTS = "/api/events";
 
 	// event support
 	private LinkedList<ServerWebSocket> subscribers;
 
-	public LampThingHTTPAdapter(LampThingAPI model, String host, int port, Vertx vertx) {
+	public PresenceDetectorThingHTTPAdapter(PresenceDetectorThingAPI model, String host, int port, Vertx vertx) {
 		super(model, vertx);
 		this.thingHost = host;
 		this.thingPort = port;
@@ -50,8 +50,7 @@ public class LampThingHTTPAdapter extends ThingAbstractAdapter<LampThingAPI> {
 			try {
 				router.get(TD).handler(this::handleGetTD);
 				router.get(PROPERTY_STATE).handler(this::handleGetPropertyState);
-				router.post(ACTION_ON).handler(this::handleActionOn);
-				router.post(ACTION_OFF).handler(this::handleActionOff);
+				router.post(START_DETECTION).handler(this::handleStartDetection);
 
 				populateTD(td);
 
@@ -118,22 +117,12 @@ public class LampThingHTTPAdapter extends ThingAbstractAdapter<LampThingAPI> {
 		JsonArray onForms = 
 				td
 				.getJsonObject("actions")
-				.getJsonObject("on")
+				.getJsonObject("startDetection")
 				.getJsonArray("forms");
 
 		JsonObject httpOnForm = new JsonObject();
-		httpOnForm.put("href", "http://" + thingHost + ":" + thingPort + "/api/actions/on");
+		httpOnForm.put("href", "http://" + thingHost + ":" + thingPort + "/api/actions/startDetection");
 		onForms.add(httpOnForm);
-
-		JsonArray offForms = 
-				td
-				.getJsonObject("actions")
-				.getJsonObject("off")
-				.getJsonArray("forms");
-
-		JsonObject httpOffForm = new JsonObject();
-		httpOffForm.put("href", "http://" + thingHost + ":" + thingPort + "/api/actions/off");
-		offForms.add(httpOffForm);
 
 		JsonArray stateChangedForms = 
 				td
@@ -166,26 +155,17 @@ public class LampThingHTTPAdapter extends ThingAbstractAdapter<LampThingAPI> {
 		});
 	}
 
-	protected void handleActionOn(RoutingContext ctx) {
+	protected void handleStartDetection(RoutingContext ctx) {
 		HttpServerResponse res = ctx.response();
-		log("ON request.");
-		Future<Void> fut = this.getModel().on();
-		fut.onSuccess(ret -> {
-			res.setStatusCode(DONE).end();
-		});
-	}
-
-	protected void handleActionOff(RoutingContext ctx) {
-		HttpServerResponse res = ctx.response();
-		log("OFF request.");
-		Future<Void> fut = this.getModel().off();
+		log("Start Detection request.");
+		Future<Void> fut = this.getModel().startDetection();
 		fut.onSuccess(ret -> {
 			res.setStatusCode(DONE).end();
 		});
 	}
 
 	protected void log(String msg) {
-		System.out.println("[LampThingHTTPAdapter][" + System.currentTimeMillis() + "] " + msg);
+		System.out.println("[PresenceDetectorThingHTTPAdapter][" + System.currentTimeMillis() + "] " + msg);
 	}
 
 }

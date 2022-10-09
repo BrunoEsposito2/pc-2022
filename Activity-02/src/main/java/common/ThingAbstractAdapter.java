@@ -1,4 +1,4 @@
-package lamp_thing.impl;
+package common;
 
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
