@@ -1,15 +1,16 @@
-package luminosityLevel_thing.api;
+package delivery.lamp_thing.api;
 
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 
 /**
- * Toy LuminosityLevelThing API
- *
+ * Toy LightThing API -> (Port part)
+ *   
+ * @author aricci
  *
  */
-public interface LuminosityLevelThingAPI {
+public interface LampThingAPI {
 	
 	/**
 	 * Get the TD

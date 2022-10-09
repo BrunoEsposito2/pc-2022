@@ -1,4 +1,4 @@
-package lamp_thing.api;
+package delivery.luminosity_thing.api;
 
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
