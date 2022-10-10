@@ -1,6 +1,6 @@
 package delivery.lamp_thing.consumers;
 
-import delivery.lamp_thing.api.LampThingAPI;
+import delivery.api.LampThingAPI;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;

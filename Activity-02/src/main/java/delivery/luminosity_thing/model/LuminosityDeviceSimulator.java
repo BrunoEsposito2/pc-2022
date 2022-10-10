@@ -1,11 +1,8 @@
 package delivery.luminosity_thing.model;
 
 import delivery.luminosity_thing.view.LuminositySimFrame;
-import smart_room.AbstractEventSource;
-import smart_room.Controller;
-import smart_room.LuminositySensorDevice;
 
-public class LuminosityDeviceSimulator extends AbstractEventSource implements LuminositySensorDevice {
+public class LuminosityDeviceSimulator {
 
     private LuminositySimFrame frame;
     private String luminosityID;
@@ -21,14 +18,11 @@ public class LuminosityDeviceSimulator extends AbstractEventSource implements Lu
         this.frame.display();
     }
 
-    public synchronized void updateLuminosity(double value) {
-        long ts = System.currentTimeMillis();
+    public void updateLuminosity(double value) {
         this.intensityValue = value;
-        this.notifyEvent(new LightLevelChanged(ts, value));
     }
 
-    @Override
-    public synchronized double getLuminosity() {
+    public double getLuminosity() {
         return this.intensityValue;
     }
 }

@@ -1,7 +1,5 @@
 package delivery.luminosity_thing.consumers;
 
-import delivery.lamp_thing.consumers.LampThingHTTPProxy;
-import delivery.lamp_thing.consumers.VanillaLampThingConsumerAgent;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 

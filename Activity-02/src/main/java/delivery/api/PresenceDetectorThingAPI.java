@@ -1,4 +1,4 @@
-package delivery.presenceDetector_thing.api;
+package delivery.api;
 
 import io.vertx.core.Future;
 import io.vertx.core.Handler;

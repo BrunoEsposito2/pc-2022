@@ -12,7 +12,7 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 ;
 import common.ThingAbstractAdapter;
-import delivery.presenceDetector_thing.api.PresenceDetectorThingAPI;
+import delivery.api.PresenceDetectorThingAPI;
 
 import java.util.Iterator;
 import java.util.LinkedList;

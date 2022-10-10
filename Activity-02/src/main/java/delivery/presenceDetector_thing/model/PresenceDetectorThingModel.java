@@ -6,7 +6,7 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import delivery.presenceDetector_thing.api.PresenceDetectorThingAPI;
+import delivery.api.PresenceDetectorThingAPI;
 
 /**
  * 

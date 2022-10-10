@@ -1,7 +1,7 @@
 package delivery.luminosity_thing.model;
 
 import common.ThingAbstractAdapter;
-import delivery.luminosity_thing.api.LuminosityThingAPI;
+import delivery.api.LuminosityThingAPI;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;

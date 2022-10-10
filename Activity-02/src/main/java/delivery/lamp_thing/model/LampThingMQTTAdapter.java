@@ -1,7 +1,7 @@
 package delivery.lamp_thing.model;
 
 import common.ThingAbstractAdapter;
-import delivery.lamp_thing.api.LampThingAPI;
+import delivery.api.LampThingAPI;
 import io.netty.handler.codec.mqtt.MqttQoS;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;

@@ -5,7 +5,7 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import delivery.presenceDetector_thing.api.PresenceDetectorThingAPI;
+import delivery.api.PresenceDetectorThingAPI;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

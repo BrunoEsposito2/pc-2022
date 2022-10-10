@@ -1,13 +1,11 @@
 package delivery.luminosity_thing.model;
 
 import common.ThingAbstractAdapter;
-import delivery.luminosity_thing.api.LuminosityThingAPI;
+import delivery.api.LuminosityThingAPI;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import lamp_thing.impl.LampThingHTTPAdapter;
-import lamp_thing.impl.LampThingMQTTAdapter;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
