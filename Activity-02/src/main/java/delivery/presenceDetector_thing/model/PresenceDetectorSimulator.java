@@ -10,6 +10,7 @@ import smart_room.PresenceDetectionDevice;
 
 public class PresenceDetectorSimulator implements PresenceDetectionDevice {
 
+	private boolean isDetected;
 	private PresenceDetectorSimFrame frame;
 	private String pDetectorID;
 
@@ -20,15 +21,25 @@ public class PresenceDetectorSimulator implements PresenceDetectionDevice {
 	public void init() {
 		frame = new PresenceDetectorSimFrame(pDetectorID);
 		frame.display();
+		isDetected = false;
 	}
 
 	@Override
 	public void register(Controller c) {
-
+		long ts = System.currentTimeMillis();
+		if (this.isDetected) {
+			c.notifyEvent(new PresenceDetected(ts));
+		} else {
+			c.notifyEvent(new PresenceNotDetected(ts));
+		}
 	}
 
 	@Override
 	public boolean presenceDetected() {
-		return false;
+		return isDetected;
+	}
+
+	public void updateValue(boolean value) {
+		this.isDetected = value;
 	}
 }
