@@ -1,5 +1,6 @@
 package delivery.lamp_thing.model;
 
+import common.ThingAbstractAdapter;
 import delivery.lamp_thing.api.LampThingAPI;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.CompositeFuture;

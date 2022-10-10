@@ -8,11 +8,9 @@ public interface LuminosityThingAPI {
 
     Future<JsonObject> getTD();
 
-    Future<String> getValue();
+    Future<Double> getIntensity();
 
-    Future<Void> inc();
-
-    Future<Void> dec();
+    Future<Void> setIntensity();
 
     Future<Void> subscribe(Handler<JsonObject> handler);
 
