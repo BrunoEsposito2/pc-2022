@@ -19,7 +19,7 @@ public class PresenceDetectorSimulator implements PresenceDetectionDevice {
 	}
 	
 	public void init() {
-		frame = new PresenceDetectorSimFrame(pDetectorID);
+		frame = new PresenceDetectorSimFrame(this, pDetectorID);
 		frame.display();
 		isDetected = false;
 	}

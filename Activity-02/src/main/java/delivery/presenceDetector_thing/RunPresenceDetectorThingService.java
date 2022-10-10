@@ -7,7 +7,6 @@ import io.vertx.core.Vertx;
 /**
  * Launching the Presence Detector Thing service.
  *
- *
  */
 public class RunPresenceDetectorThingService {
 
