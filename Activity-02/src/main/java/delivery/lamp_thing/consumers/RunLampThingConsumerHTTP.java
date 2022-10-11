@@ -13,7 +13,7 @@ public class RunLampThingConsumerHTTP {
 		LampThingHTTPProxy thing = new LampThingHTTPProxy("localhost", LAMP_THING_PORT);
 		Future<Void> fut = thing.setup(vertx);
 		fut.onSuccess(h -> {
-			vertx.deployVerticle(new VanillaLampThingConsumerAgent(thing));
+			vertx.deployVerticle(new VanillaLampThingConsumerAgent(thing, null));
 		});
 	}
 

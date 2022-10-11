@@ -64,7 +64,7 @@ public class LuminosityThingService extends AbstractVerticle {
     }
 
     protected void log(String msg) {
-        System.out.println("[LampThingService] " + msg);
+        System.out.println("[LuminosityThingService] " + msg);
     }
 
 }

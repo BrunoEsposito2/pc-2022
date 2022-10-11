@@ -1,6 +1,6 @@
 package delivery.lamp_thing;
 
-import delivery.lamp_thing.model.LampThingModel;
+import delivery.lamp_thing.model.LampThing;
 import delivery.lamp_thing.model.LampThingService;
 import io.vertx.core.Vertx;
 
@@ -15,7 +15,7 @@ public class RunLampThingService {
 	public static void main(String[] args) {
 		Vertx vertx = Vertx.vertx();
 
-		LampThingModel model = new LampThingModel("MyLamp");
+		LampThing model = new LampThing("MyLamp");
 		model.setup(vertx);
 		
 		LampThingService service = new LampThingService(model);

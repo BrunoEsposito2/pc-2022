@@ -13,7 +13,7 @@ public class RunLuminosityThingConsumerHTTP {
         LuminosityThingHTTPProxy thing = new LuminosityThingHTTPProxy("localhost", LUMINOSITY_THING_PORT);
         Future<Void> fut = thing.setup(vertx);
         fut.onSuccess(h -> {
-            vertx.deployVerticle(new VanillaLuminosityThingConsumerHTTP(thing));
+            vertx.deployVerticle(new VanillaLuminosityThingConsumerAgent(thing));
         });
     }
 

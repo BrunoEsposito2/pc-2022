@@ -15,7 +15,7 @@ import io.vertx.core.json.JsonObject;
  * @author aricci
  *
  */
-public class LampThingModel implements LampThingAPI {
+public class LampThing implements LampThingAPI {
 
 	private Vertx vertx; // solo perché supporta pienamente la programmazione asincrona, altrimenti avrei potuto sfruttare
 						// un linguaggio diverso da java con le stesse caratteristiche: in quel caso non avrei quindi usato Vertx
@@ -28,7 +28,7 @@ public class LampThingModel implements LampThingAPI {
 	private LampDeviceSimulator ld;
 	
 
-	public LampThingModel(String thingId) {
+	public LampThing(String thingId) {
 		log("Creating the light thing simulator.");
 		this.thingId = thingId;
 		

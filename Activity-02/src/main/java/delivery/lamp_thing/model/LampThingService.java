@@ -25,16 +25,15 @@ public class LampThingService extends AbstractVerticle {
 	private LampThingAPI model;
 	private List<ThingAbstractAdapter> adapters;
 	
-	public static final int HTTP_PORT = 8888;
-	public static final int MQTT_PORT = 1883;
+	public static final int HTTP_PORT = 7777;
 	
 	public LampThingService(LampThingAPI model) {
 		this.model = model;
-		adapters = new LinkedList<ThingAbstractAdapter>();
+		adapters = new LinkedList<>();
 	}
 	
 	@Override
-	public void start(Promise<Void> startPromise) throws Exception {
+	public void start(Promise<Void> startPromise) {
 		installAdapters(startPromise);
 	}	
 	
@@ -64,25 +63,6 @@ public class LampThingService extends AbstractVerticle {
 			});
 		} catch (Exception ex) {
 			log("HTTP adapter installation failed.");
-		}
-				
-		try {
-			/*
-			 * Installing MQTT adapter.
-			 */
-			LampThingMQTTAdapter mqttAdapter = new LampThingMQTTAdapter(model, "localhost", MQTT_PORT, this.getVertx());
-			Promise<Void> p = Promise.promise();
-			mqttAdapter.setupAdapter(p);
-			Future<Void> fut = p.future();
-			allFutures.add(fut);
-			fut.onSuccess(res -> {
-				log("MQTT adapter installed.");
-				adapters.add(mqttAdapter);
-			}).onFailure(f -> {
-				log("MQTT adapter not installed.");
-			});
-		} catch (Exception ex) {
-			log("MQTT adapter installation failed.");
 		}
 		
 		CompositeFuture.all(allFutures).onComplete(res -> {

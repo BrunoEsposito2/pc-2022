@@ -6,12 +6,12 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.json.JsonObject;
 
-public class VanillaLuminosityThingConsumerHTTP extends AbstractVerticle {
+public class VanillaLuminosityThingConsumerAgent extends AbstractVerticle {
 
     private LuminosityThingAPI thing;
     private int nEventsReceived;
 
-    public VanillaLuminosityThingConsumerHTTP(LuminosityThingAPI luminosityThingAPI) {
+    public VanillaLuminosityThingConsumerAgent(LuminosityThingAPI luminosityThingAPI) {
         this.thing = luminosityThingAPI;
         this.nEventsReceived = 0;
     }

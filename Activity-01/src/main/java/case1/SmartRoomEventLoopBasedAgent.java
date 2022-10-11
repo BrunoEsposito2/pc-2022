@@ -16,10 +16,7 @@ public class SmartRoomEventLoopBasedAgent extends BasicEventLoopAgent {
 	private double threshold;
 	private Timer timer;
 	
-	public SmartRoomEventLoopBasedAgent(
-				String id, 
-				SinglelBoardSimulator board,
-				double threshold) {
+	public SmartRoomEventLoopBasedAgent(String id, SinglelBoardSimulator board, double threshold) {
 		super(id);
 		this.board = board;
 		board.register(this);
