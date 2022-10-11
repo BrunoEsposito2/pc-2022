@@ -8,35 +8,24 @@ import delivery.presenceDetector_thing.view.PresenceDetectorSimFrame;
 import smart_room.Controller;
 import smart_room.PresenceDetectionDevice;
 
-public class PresenceDetectorSimulator implements PresenceDetectionDevice {
+public class PresenceDetectorSimulator {
 
-	private boolean isDetected;
 	private PresenceDetectorSimFrame frame;
 	private String pDetectorID;
+	private boolean isDetected;
 
 	public PresenceDetectorSimulator(String pDetectorID){
 		this.pDetectorID = pDetectorID;
+		this.isDetected = false;
 	}
 	
 	public void init() {
-		frame = new PresenceDetectorSimFrame(this, pDetectorID);
-		frame.display();
-		isDetected = false;
+		this.frame = new PresenceDetectorSimFrame(this, this.pDetectorID);
+		this.frame.display();
 	}
 
-	@Override
-	public void register(Controller c) {
-		long ts = System.currentTimeMillis();
-		if (this.isDetected) {
-			c.notifyEvent(new PresenceDetected(ts));
-		} else {
-			c.notifyEvent(new PresenceNotDetected(ts));
-		}
-	}
-
-	@Override
 	public boolean presenceDetected() {
-		return isDetected;
+		return this.isDetected;
 	}
 
 	public void updateValue(boolean value) {

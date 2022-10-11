@@ -17,10 +17,10 @@ public class VanillaLampThingConsumerAgent extends AbstractVerticle {
 	private StateType presenceDetected;
 	private double currentLuminosity;
 	
-	public VanillaLampThingConsumerAgent(LampThingAPI lampAPI, LuminosityThingAPI luminosityAPI) {
+	public VanillaLampThingConsumerAgent(LampThingAPI lampAPI, LuminosityThingAPI luminosityAPI, PresenceDetectorThingAPI presenceAPI) {
 		this.lampThing = lampAPI;
 		this.luminosityThing = luminosityAPI;
-		//this.presenceThing = presenceAPI;
+		this.presenceThing = presenceAPI;
 		this.presenceDetected = StateType.LIGHT_OFF;
 		this.currentLuminosity = 0;
 	}
@@ -36,10 +36,14 @@ public class VanillaLampThingConsumerAgent extends AbstractVerticle {
 		log("Getting the intensity value...");
 		Future<Double> getValueRes = luminosityThing.getIntensity();
 
+		log("Getting if presence is detected or not...");
+		Future<Boolean> getPresenceRes = presenceThing.presenceDetected();
+
+		/**/
 		Future<Void> switchOnRes = getStateRes.compose(res -> {
 			log("Status: " + res);
-			log("Switching on");
-			return lampThing.on();
+			log("Switching off");		//quando parte l'app, la luce è spenta
+			return lampThing.off();
 		}).onFailure(err -> {
 			log("Lamp failure " + err);
 		});
@@ -52,6 +56,15 @@ public class VanillaLampThingConsumerAgent extends AbstractVerticle {
 			log("Intensity failure " + err);
 		});
 
+		Future<Boolean> setPresenceRes = getPresenceRes.compose(res -> {
+			log("Value: " + res);
+			log("Setting if present or not");
+			return presenceThing.presenceDetected();
+		}).onFailure(err -> {
+			log("PresenceDetection failure " + err);
+		});
+
+		/**/
 		Future<Void> subscribeLampRes = switchOnRes.compose(res -> {
 			this.presenceDetected = StateType.LIGHT_ON; // temp
 			log("Lamp action done. ");
@@ -65,14 +78,23 @@ public class VanillaLampThingConsumerAgent extends AbstractVerticle {
 			return luminosityThing.subscribe(this::onNewEvent);
 		});
 
+		Future<Void> subscribePresenceRes = setPresenceRes.compose(res -> {
+			log("Presence Detection action done. ");
+			log("Subscribing presence detection...");
+			return presenceThing.subscribe(this::onNewEvent);
+		});
+
+		/**/
 		subscribeLampRes.onComplete(res -> {
 			log("Lamp subscribed!");
 		});
 		subscribeLuminosityRes.onComplete(res -> {
 			log("Intensity sensor subscribed!");
 		});
+		subscribePresenceRes.onComplete(res -> {
+			log("Presence Detector subscribed!");
+		});
 	}
-	
 	
 	/**
 	 * Handler to process observed events  
@@ -81,7 +103,7 @@ public class VanillaLampThingConsumerAgent extends AbstractVerticle {
 		String evType = ev.getString("events");
 		if (evType.equals("valueChanged")) { // luminosity value was changed
 			log("light level changed");
-			this.currentLuminosity = luminosityThing.getIntensity().result();
+			this.currentLuminosity = this.luminosityThing.getIntensity().result();
 		} else if (evType.equals("stateChanged")) { // lamp state was switched on/off
 			log("lamp status is " + ((presenceDetected == StateType.LIGHT_ON) ? "ON" : "OFF"));
 			// change presenceDetected

@@ -19,14 +19,14 @@ import java.util.List;
  */
 public class PresenceDetectorThingService extends AbstractVerticle {
 
+	public static final int HTTP_PORT = 9999;
 	private PresenceDetectorThingAPI model;
 	private List<ThingAbstractAdapter> adapters;
 
-	public static final int HTTP_PORT = 8881;
 
 	public PresenceDetectorThingService(PresenceDetectorThingAPI model) {
 		this.model = model;
-		adapters = new LinkedList<ThingAbstractAdapter>();
+		this.adapters = new LinkedList<ThingAbstractAdapter>();
 	}
 	
 	@Override

@@ -40,7 +40,7 @@ public class VanillaLuminosityThingConsumerAgent extends AbstractVerticle {
         });
 
         subscribeRes.onComplete(res3 -> {
-            log("Subscribed!");
+            log("Luminosity Subscribed!");
         });
     }
 

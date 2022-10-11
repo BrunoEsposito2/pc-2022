@@ -19,19 +19,17 @@ import java.util.LinkedList;
 
 public class PresenceDetectorThingHTTPAdapter extends ThingAbstractAdapter<PresenceDetectorThingAPI> {
 
+
+	private static final int DONE = 201;
+	private static final String TD = "/api";
+	private static final String PRESENCE_DETECTED = "/api/properties/presenceDetected";
+	private static final String EVENTS = "/api/events";
+
 	private HttpServer server;
 	private Router router;
 
 	private String thingHost;
 	private int thingPort;
-
-	private static final int DONE = 201;
-
-	private static final String TD = "/api";
-	private static final String PRESENCE_DETECTED = "/api/properties/presenceDetected";
-	private static final String EVENTS = "/api/events";
-
-	// event support
 	private LinkedList<ServerWebSocket> subscribers;
 
 	public PresenceDetectorThingHTTPAdapter(PresenceDetectorThingAPI model, String host, int port, Vertx vertx) {
@@ -113,6 +111,15 @@ public class PresenceDetectorThingHTTPAdapter extends ThingAbstractAdapter<Prese
 		stateForms.add(httpStateForm);
 	}
 
+	protected void handleGetTD(RoutingContext ctx) {
+		HttpServerResponse res = ctx.response();
+		res.putHeader("Content-Type", "application/json");
+		Future<JsonObject> fut = this.getModel().getTD();
+		fut.onSuccess(td -> {
+			res.end(td.toBuffer());
+		});
+	}
+
 	protected void handleGetPresenceDetected(RoutingContext ctx) {
 		HttpServerResponse res = ctx.response();
 		res.putHeader("Content-Type", "application/json");
@@ -121,15 +128,6 @@ public class PresenceDetectorThingHTTPAdapter extends ThingAbstractAdapter<Prese
 		fut.onSuccess(status -> {
 			reply.put("presenceDetected", status);
 			res.end(reply.toBuffer());
-		});
-	}
-
-	protected void handleGetTD(RoutingContext ctx) {
-		HttpServerResponse res = ctx.response();
-		res.putHeader("Content-Type", "application/json");
-		Future<JsonObject> fut = this.getModel().getTD();
-		fut.onSuccess(td -> {
-			res.end(td.toBuffer());
 		});
 	}
 

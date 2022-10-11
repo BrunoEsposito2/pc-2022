@@ -14,7 +14,7 @@ import delivery.api.PresenceDetectorThingAPI;
  *
  *
  */
-public class PresenceDetectorThingModel implements PresenceDetectorThingAPI {
+public class PresenceDetectorThing implements PresenceDetectorThingAPI {
 
 	private Vertx vertx;
 
@@ -25,11 +25,10 @@ public class PresenceDetectorThingModel implements PresenceDetectorThingAPI {
 	private PresenceDetectorSimulator pds;
 
 
-	public PresenceDetectorThingModel(String thingId) {
+	public PresenceDetectorThing(String thingId) {
 		log("Creating the presence detector thing simulator.");
 		this.thingId = thingId;
-		
-	    isDetected = false;
+	    this.isDetected = false;
 	    
 		pds = new PresenceDetectorSimulator(thingId);
 		pds.init();
@@ -112,6 +111,7 @@ public class PresenceDetectorThingModel implements PresenceDetectorThingAPI {
 	
 	public Future<Void> subscribe(Handler<JsonObject> h) {
 		Promise<Void> p = Promise.promise();
+
 		vertx.eventBus().consumer("events", ev -> {
 			h.handle((JsonObject) ev.body());
 		});	
