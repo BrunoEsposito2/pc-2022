@@ -18,8 +18,6 @@ public class PresenceDetectorThing implements PresenceDetectorThingAPI {
 
 	private Vertx vertx;
 
-	private Boolean isDetected;
-
 	private String thingId;
 	private JsonObject td;
 	private PresenceDetectorSimulator pds;
@@ -28,7 +26,6 @@ public class PresenceDetectorThing implements PresenceDetectorThingAPI {
 	public PresenceDetectorThing(String thingId) {
 		log("Creating the presence detector thing simulator.");
 		this.thingId = thingId;
-	    this.isDetected = false;
 	    
 		pds = new PresenceDetectorSimulator(thingId);
 		pds.init();
@@ -89,7 +86,7 @@ public class PresenceDetectorThing implements PresenceDetectorThingAPI {
 	public Future<Boolean> presenceDetected() {
 		Promise<Boolean> p = Promise.promise();
 		synchronized (this) {
-			p.complete(isDetected);
+			p.complete(pds.presenceDetected());
 			this.notifyNewPropertyStatus();
 		}
 		return p.future();
@@ -99,7 +96,7 @@ public class PresenceDetectorThing implements PresenceDetectorThingAPI {
 		JsonObject ev = new JsonObject();
 		ev.put("event", "isDetected");
 		JsonObject data = new JsonObject();
-		data.put("isDetected", isDetected);
+		data.put("isDetected", pds.presenceDetected());
 		ev.put("data", data);
 		ev.put("timestamp", System.currentTimeMillis());
 		this.generateEvent(ev);
