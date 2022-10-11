@@ -25,12 +25,11 @@ public class SmartRoomService {
 
         LampThingService lampService = new LampThingService(lampModel);
         LuminosityThingService luminosityService = new LuminosityThingService(luminosityModel);
+        PresenceDetectorThingService presDetectservice = new PresenceDetectorThingService(presenceDetectorModel);
 
         lampVertx.deployVerticle(lampService);
         luminosityVertx.deployVerticle(luminosityService);
-
-        PresenceDetectorThingService service = new PresenceDetectorThingService(presenceDetectorModel);
-        presDecVertx.deployVerticle(service);
+        presDecVertx.deployVerticle(presDetectservice);
     }
 
 }
