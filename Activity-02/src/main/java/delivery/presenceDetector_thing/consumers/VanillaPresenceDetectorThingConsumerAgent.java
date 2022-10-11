@@ -25,17 +25,17 @@ public class VanillaPresenceDetectorThingConsumerAgent extends AbstractVerticle 
         log("Getting the presence detected value...");
         Future<Boolean> getValueRes = thing.presenceDetected();
 
-        Future<Boolean> setValueRes = getValueRes.compose(res -> {
+        Future<Void> setValueRes = getValueRes.compose(res -> {
             log("Value: " + res);
-            log("Setting the intensity value");
-            return thing.presenceDetected();
+            log("Setting the presence detector");
+            return thing.activate();
         }).onFailure(err -> {
             log("Failure " + err);
         });
 
         Future<Void> subscribeRes = setValueRes.compose(res2 -> {
-            log("Action done. ");
-            log("Subscribing...");
+            log("Presence Detection action done. ");
+            log("Subscribing presence detector...");
             return thing.subscribe(this::onNewEvent);
         });
 

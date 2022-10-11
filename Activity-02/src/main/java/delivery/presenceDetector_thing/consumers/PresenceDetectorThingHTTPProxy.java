@@ -72,8 +72,7 @@ public class PresenceDetectorThingHTTPProxy implements PresenceDetectorThingAPI 
     @Override
     public Future<Void> activate() {
         Promise<Void> promise = Promise.promise();
-        client
-            .post(this.thingPort, thingHost, ACTION_ACTIVATE)
+        client.post(this.thingPort, thingHost, ACTION_ACTIVATE)
             .send()
             .onSuccess(response -> {
                 promise.complete(null);

@@ -14,7 +14,7 @@ public class LuminosityThingHTTPProxy implements LuminosityThingAPI {
 
     private static final String TD = "/api";
     private static final String PROPERTY_STATE = "/api/properties/value";
-    private static final String ACTION_SET = "/api/actions/setValue";
+    private static final String ACTION_ACTIVATE = "/api/actions/activate";
     private static final String EVENTS = "/api/events";
 
     private Vertx vertx;
@@ -71,7 +71,7 @@ public class LuminosityThingHTTPProxy implements LuminosityThingAPI {
     @Override
     public Future<Void> activate() {
         Promise<Void> promise = Promise.promise();
-        client.post(this.thingPort, this.thingHost, ACTION_SET)
+        client.post(this.thingPort, this.thingHost, ACTION_ACTIVATE)
                 .send()
                 .onSuccess(response -> {
                     promise.complete(null);

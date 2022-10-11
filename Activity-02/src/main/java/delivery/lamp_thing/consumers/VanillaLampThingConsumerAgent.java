@@ -38,7 +38,6 @@ public class VanillaLampThingConsumerAgent extends AbstractVerticle {
 		log("Getting if presence is detected or not...");
 		Future<Boolean> getPresenceRes = presenceThing.presenceDetected();
 
-		/**/
 		Future<Void> switchOffRes = getStateRes.compose(res -> {
 			log("Status: " + res);
 			log("Switching off");		//quando parte l'app, la luce è spenta
@@ -47,33 +46,14 @@ public class VanillaLampThingConsumerAgent extends AbstractVerticle {
 			log("Lamp failure " + err);
 		});
 
-		Future<Boolean> setPresenceRes = getPresenceRes.compose(res -> {
-			log("Value: " + res);
-			log("Setting if present or not");
-			return presenceThing.presenceDetected();
-		}).onFailure(err -> {
-			log("PresenceDetection failure " + err);
-		});
-
-		/**/
 		Future<Void> subscribeLampRes = switchOffRes.compose(res -> {
 			log("Lamp action done. ");
 			log("Subscribing lamp...");
 			return lampThing.subscribe(this::onNewEvent);
 		});
 
-		Future<Void> subscribePresenceRes = setPresenceRes.compose(res -> {
-			log("Presence Detection action done. ");
-			log("Subscribing presence detection...");
-			return presenceThing.subscribe(this::onNewEvent);
-		});
-
-		/**/
 		subscribeLampRes.onComplete(res -> {
 			log("Lamp subscribed!");
-		});
-		subscribePresenceRes.onComplete(res -> {
-			log("Presence Detector subscribed!");
 		});
 	}
 	
