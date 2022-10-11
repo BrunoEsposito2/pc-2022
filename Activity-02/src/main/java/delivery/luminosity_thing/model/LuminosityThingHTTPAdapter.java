@@ -148,7 +148,7 @@ public class LuminosityThingHTTPAdapter extends ThingAbstractAdapter<LuminosityT
     protected void handleActionSet(RoutingContext ctx) {
         HttpServerResponse res = ctx.response();
         log("SET request.");
-        Future<Void> fut = this.getModel().setIntensity();
+        Future<Void> fut = this.getModel().activate();
         fut.onSuccess(ret -> {
             res.setStatusCode(STATUS_CODE_DONE).end();
         });

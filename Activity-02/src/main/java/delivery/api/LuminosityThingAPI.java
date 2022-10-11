@@ -10,7 +10,7 @@ public interface LuminosityThingAPI {
 
     Future<Double> getIntensity();
 
-    Future<Void> setIntensity(); // forse da eliminare
+    Future<Void> activate(); // forse da eliminare
 
     Future<Void> subscribe(Handler<JsonObject> handler); // forse da eliminare
 

@@ -53,9 +53,9 @@ public class LuminosityThing implements LuminosityThingAPI {
 
         JsonObject actions = new JsonObject();
         td.put("actions", actions);
-        JsonObject setValue = new JsonObject();
-        actions.put("setValue", setValue);
-        setValue.put("forms", new JsonArray());
+        JsonObject active = new JsonObject();
+        actions.put("activate", active);
+        active.put("forms", new JsonArray());
 
         /* events */
 
@@ -90,7 +90,7 @@ public class LuminosityThing implements LuminosityThingAPI {
     }
 
     @Override
-    public Future<Void> setIntensity() {
+    public Future<Void> activate() {
         Promise<Void> p = Promise.promise();
 
         this.notifyNewPropertyValue();

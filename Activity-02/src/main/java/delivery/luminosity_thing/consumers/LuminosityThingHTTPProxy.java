@@ -69,7 +69,7 @@ public class LuminosityThingHTTPProxy implements LuminosityThingAPI {
     }
 
     @Override
-    public Future<Void> setIntensity() {
+    public Future<Void> activate() {
         Promise<Void> promise = Promise.promise();
         client.post(this.thingPort, this.thingHost, ACTION_SET)
                 .send()

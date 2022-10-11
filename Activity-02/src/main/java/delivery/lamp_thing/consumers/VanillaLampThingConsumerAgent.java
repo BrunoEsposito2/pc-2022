@@ -51,8 +51,8 @@ public class VanillaLampThingConsumerAgent extends AbstractVerticle {
 
 		Future<Void> setValueRes = getValueRes.compose(res -> {
 			log("Value: " + res);
-			log("Setting the intensity value");
-			return luminosityThing.setIntensity();
+			log("Activating the intensity sensor");
+			return luminosityThing.activate();
 		}).onFailure(err -> {
 			log("Intensity failure " + err);
 		});
