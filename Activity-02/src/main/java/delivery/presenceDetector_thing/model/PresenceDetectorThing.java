@@ -57,8 +57,14 @@ public class PresenceDetectorThing implements PresenceDetectorThingAPI {
 		props.put("presenceDetected", state);
 		state.put("type", "string");
 		state.put("forms", new JsonArray());
-				
+
 		/* actions */
+
+		JsonObject actions = new JsonObject();
+		td.put("actions", actions);
+		JsonObject activate = new JsonObject();
+		actions.put("activate", activate);
+		activate.put("forms", new JsonArray());
 		
 		/* events */
 
@@ -89,6 +95,13 @@ public class PresenceDetectorThing implements PresenceDetectorThingAPI {
 			p.complete(pds.presenceDetected());
 			this.notifyNewPropertyStatus();
 		}
+		return p.future();
+	}
+
+	@Override
+	public Future<Void> activate() {
+		Promise<Void> p = Promise.promise();
+		this.notifyNewPropertyStatus();
 		return p.future();
 	}
 

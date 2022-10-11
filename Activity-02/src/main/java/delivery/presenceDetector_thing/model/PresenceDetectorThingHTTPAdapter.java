@@ -19,10 +19,10 @@ import java.util.LinkedList;
 
 public class PresenceDetectorThingHTTPAdapter extends ThingAbstractAdapter<PresenceDetectorThingAPI> {
 
-
 	private static final int DONE = 201;
 	private static final String TD = "/api";
 	private static final String PRESENCE_DETECTED = "/api/properties/presenceDetected";
+	private static final String ACTION_ACTIVATE = "/api/actions/activate";
 	private static final String EVENTS = "/api/events";
 
 	private HttpServer server;
@@ -47,6 +47,7 @@ public class PresenceDetectorThingHTTPAdapter extends ThingAbstractAdapter<Prese
 			try {
 				router.get(TD).handler(this::handleGetTD);
 				router.get(PRESENCE_DETECTED).handler(this::handleGetPresenceDetected);
+				router.post(ACTION_ACTIVATE).handler(this::handleActionActivate);
 
 				populateTD(td);
 
@@ -109,6 +110,16 @@ public class PresenceDetectorThingHTTPAdapter extends ThingAbstractAdapter<Prese
 		JsonObject httpStateForm = new JsonObject();
 		httpStateForm.put("href", "http://" + thingHost + ":" + thingPort + "/api/properties/presenceDetected");
 		stateForms.add(httpStateForm);
+
+		JsonArray onForms =
+				td
+				.getJsonObject("actions")
+				.getJsonObject("activate")
+				.getJsonArray("forms");
+
+		JsonObject httpOnForm = new JsonObject();
+		httpOnForm.put("href", "http://" + thingHost + ":" + thingPort + "/api/actions/activate");
+		onForms.add(httpOnForm);
 	}
 
 	protected void handleGetTD(RoutingContext ctx) {
@@ -128,6 +139,15 @@ public class PresenceDetectorThingHTTPAdapter extends ThingAbstractAdapter<Prese
 		fut.onSuccess(status -> {
 			reply.put("presenceDetected", status);
 			res.end(reply.toBuffer());
+		});
+	}
+
+	protected void handleActionActivate(RoutingContext ctx) {
+		HttpServerResponse res = ctx.response();
+		log("Activate");
+		Future<Void> fut = this.getModel().activate();
+		fut.onSuccess(ret -> {
+			res.setStatusCode(DONE).end();
 		});
 	}
 

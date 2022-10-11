@@ -5,8 +5,6 @@
 package delivery.presenceDetector_thing.model;
 
 import delivery.presenceDetector_thing.view.PresenceDetectorSimFrame;
-import smart_room.Controller;
-import smart_room.PresenceDetectionDevice;
 
 public class PresenceDetectorSimulator {
 

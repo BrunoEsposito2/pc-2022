@@ -14,6 +14,7 @@ public class PresenceDetectorThingHTTPProxy implements PresenceDetectorThingAPI 
 
     private static final String TD = "/api";
     private static final String PRESENCE_DETECTED = "/api/properties/presenceDetected";
+    private static final String ACTION_ACTIVATE = "/api/actions/activate";
     private static final String EVENTS = "/api/events";
 
 
@@ -65,6 +66,21 @@ public class PresenceDetectorThingHTTPProxy implements PresenceDetectorThingAPI 
                 .onFailure(err -> {
                     promise.fail("Something went wrong " + err.getMessage());
                 });
+        return promise.future();
+    }
+
+    @Override
+    public Future<Void> activate() {
+        Promise<Void> promise = Promise.promise();
+        client
+            .post(this.thingPort, thingHost, ACTION_ACTIVATE)
+            .send()
+            .onSuccess(response -> {
+                promise.complete(null);
+            })
+            .onFailure(err -> {
+                promise.fail("Something went wrong " + err.getMessage());
+            });
         return promise.future();
     }
 
