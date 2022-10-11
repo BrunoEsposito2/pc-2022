@@ -25,22 +25,22 @@ public class VanillaLuminosityThingConsumerAgent extends AbstractVerticle {
         log("Getting the intensity value...");
         Future<Double> getValueRes = thing.getIntensity();
 
-        Future<Double> setValueRes = getValueRes.compose(res -> {
+        Future<Void> setValueRes = getValueRes.compose(res -> {
             log("Value: " + res);
-            log("Setting the intensity value");
-            return thing.getIntensity();
+            log("Activating the intensity sensor");
+            return thing.activate();
         }).onFailure(err -> {
             log("Failure " + err);
         });
 
         Future<Void> subscribeRes = setValueRes.compose(res2 -> {
-            log("Action done. ");
-            log("Subscribing...");
+            log("Intensity activated. ");
+            log("Subscribing intensity sensor...");
             return thing.subscribe(this::onNewEvent);
         });
 
         subscribeRes.onComplete(res3 -> {
-            log("Luminosity Subscribed!");
+            log("Intensity sensor subscribed!");
         });
     }
 
@@ -48,8 +48,11 @@ public class VanillaLuminosityThingConsumerAgent extends AbstractVerticle {
      * Handler to process observed events
      */
     protected void onNewEvent(JsonObject ev) {
-        nEventsReceived++;
-        log("New event: \n " + ev.toString() + "\nNum events received: " + nEventsReceived);
+        String evType = ev.getString("events");
+        if (evType.equals("valueChanged")) {
+            log("light level changed");
+
+        }
     }
 
     protected void log(String msg) {

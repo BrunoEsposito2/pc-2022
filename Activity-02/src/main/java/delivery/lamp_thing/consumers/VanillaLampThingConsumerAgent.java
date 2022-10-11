@@ -31,12 +31,10 @@ public class VanillaLampThingConsumerAgent extends AbstractVerticle {
 	 * Main agent body.
 	 */
 	public void start(Promise<Void> startPromise) throws Exception {
-		log("Smart Room consumer agent started.");
+		log("Lamp consumer agent started.");
 
 		log("Getting the lamp status...");
 		Future<String> getStateRes = lampThing.getState();
-		log("Getting the intensity value...");
-		Future<Double> getValueRes = luminosityThing.getIntensity();
 		log("Getting if presence is detected or not...");
 		Future<Boolean> getPresenceRes = presenceThing.presenceDetected();
 
@@ -47,14 +45,6 @@ public class VanillaLampThingConsumerAgent extends AbstractVerticle {
 			return lampThing.off();
 		}).onFailure(err -> {
 			log("Lamp failure " + err);
-		});
-
-		Future<Void> setValueRes = getValueRes.compose(res -> {
-			log("Value: " + res);
-			log("Activating the intensity sensor");
-			return luminosityThing.activate();
-		}).onFailure(err -> {
-			log("Intensity failure " + err);
 		});
 
 		Future<Boolean> setPresenceRes = getPresenceRes.compose(res -> {
@@ -72,12 +62,6 @@ public class VanillaLampThingConsumerAgent extends AbstractVerticle {
 			return lampThing.subscribe(this::onNewEvent);
 		});
 
-		Future<Void> subscribeLuminosityRes = setValueRes.compose(res -> {
-			log("Intensity action done. ");
-			log("Subscribing intensity...");
-			return luminosityThing.subscribe(this::onNewEvent);
-		});
-
 		Future<Void> subscribePresenceRes = setPresenceRes.compose(res -> {
 			log("Presence Detection action done. ");
 			log("Subscribing presence detection...");
@@ -87,9 +71,6 @@ public class VanillaLampThingConsumerAgent extends AbstractVerticle {
 		/**/
 		subscribeLampRes.onComplete(res -> {
 			log("Lamp subscribed!");
-		});
-		subscribeLuminosityRes.onComplete(res -> {
-			log("Intensity sensor subscribed!");
 		});
 		subscribePresenceRes.onComplete(res -> {
 			log("Presence Detector subscribed!");
