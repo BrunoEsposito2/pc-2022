@@ -42,7 +42,7 @@ public class CommChannel extends AbstractEventSource {
 	}
 
 	
-	void sendMsg(String channel, JsonObject msg) {
+	public void sendMsg(String channel, JsonObject msg) {
         byte[] payload = msg.toString().getBytes();        
         MqttMessage mqttMsg = new MqttMessage(payload); 
         mqttMsg.setQos(0);

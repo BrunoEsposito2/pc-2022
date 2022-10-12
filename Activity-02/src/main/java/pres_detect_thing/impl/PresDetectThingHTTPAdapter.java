@@ -1,4 +1,4 @@
-package lamp_thing.impl;
+package pres_detect_thing.impl;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -15,7 +15,7 @@ import io.vertx.core.http.ServerWebSocket;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
-public class LampThingHTTPAdapter extends ThingAbstractAdapter<LampThingAPI> {
+public class PresDetectThingHTTPAdapter extends ThingAbstractAdapter<PresDetectThingAPI> {
 
 	private HttpServer server;
 	private Router router;
@@ -26,23 +26,14 @@ public class LampThingHTTPAdapter extends ThingAbstractAdapter<LampThingAPI> {
 	private static final String THING_BASE_PATH = "/api";
 	private static final String TD_FULL_PATH = THING_BASE_PATH;
 	private static final String PROPERTIES_BASE_PATH = THING_BASE_PATH + "/properties";
-	private static final String PROPERTY_STATE = "state";
-	private static final String PROPERTY_STATE_FULL_PATH = PROPERTIES_BASE_PATH + "/" + PROPERTY_STATE;
-	private static final String ACTIONS_BASE_PATH = THING_BASE_PATH + "/actions";
-	private static final String ACTION_ON = "on";
-	private static final String ACTION_ON_FULL_PATH = ACTIONS_BASE_PATH + "/" + ACTION_ON;
-	private static final String ACTION_OFF = "off";
-	private static final String ACTION_OFF_FULL_PATH = ACTIONS_BASE_PATH + "/" + ACTION_OFF;
+	private static final String PROPERTY_PRESENCE_DETECTED = "presenceDetected";
+	private static final String PROPERTY_PRESENCE_DETECTED_FULL_PATH = PROPERTIES_BASE_PATH + "/" + PROPERTY_PRESENCE_DETECTED;
 	private static final String EVENTS_FULL_PATH = THING_BASE_PATH + "/events";
-	private static final String EVENT_STATE_CHANGED = "stateChanged";
-	
-	private static final int DONE = 201;
-
 
 	// event support
 	private LinkedList<ServerWebSocket> subscribers;
 
-	public LampThingHTTPAdapter(LampThingAPI model, String host, int port, Vertx vertx) {
+	public PresDetectThingHTTPAdapter(PresDetectThingAPI model, String host, int port, Vertx vertx) {
 		super(model, vertx);
 		this.thingHost = host;
 		this.thingPort = port;
@@ -56,13 +47,12 @@ public class LampThingHTTPAdapter extends ThingAbstractAdapter<LampThingAPI> {
 			router = Router.router(this.getVertx());
 			try {
 				router.get(TD_FULL_PATH).handler(this::handleGetTD);
-				router.get(PROPERTY_STATE_FULL_PATH).handler(this::handleGetPropertyState);
-				router.post(ACTION_ON_FULL_PATH).handler(this::handleActionOn);
-				router.post(ACTION_OFF_FULL_PATH).handler(this::handleActionOff);
+				router.get(PROPERTY_PRESENCE_DETECTED_FULL_PATH).handler(this::handleGetDetected);
 
 				populateTD(td);
 
 			} catch (Exception ex) {
+				ex.printStackTrace();
 				log("API setup failed - " + ex.toString());
 				startPromise.fail("API setup failed - " + ex.toString());
 				return;
@@ -112,54 +102,45 @@ public class LampThingHTTPAdapter extends ThingAbstractAdapter<LampThingAPI> {
 	 * @param td
 	 */
 	protected void populateTD(JsonObject td) {
-		JsonArray stateForms = 
+		JsonArray detectedForm = 
 				td
 				.getJsonObject("properties")
-				.getJsonObject(PROPERTY_STATE)
+				.getJsonObject("presenceDetected")
 				.getJsonArray("forms");
 
-		JsonObject httpStateForm = new JsonObject();
-		httpStateForm.put("href", "http://" + thingHost + ":" + thingPort + PROPERTY_STATE_FULL_PATH);
-		stateForms.add(httpStateForm);
+		JsonObject httpDetectedForm = new JsonObject();
+		httpDetectedForm.put("href", "http://" + thingHost + ":" + thingPort + PROPERTY_PRESENCE_DETECTED_FULL_PATH);
+		detectedForm.add(httpDetectedForm);
 
-		JsonArray onForms = 
-				td
-				.getJsonObject("actions")
-				.getJsonObject(ACTION_ON)
-				.getJsonArray("forms");
-
-		JsonObject httpOnForm = new JsonObject();
-		httpOnForm.put("href", "http://" + thingHost + ":" + thingPort + ACTION_ON_FULL_PATH);
-		onForms.add(httpOnForm);
-
-		JsonArray offForms = 
-				td
-				.getJsonObject("actions")
-				.getJsonObject(ACTION_OFF)
-				.getJsonArray("forms");
-
-		JsonObject httpOffForm = new JsonObject();
-		httpOffForm.put("href", "http://" + thingHost + ":" + thingPort + ACTION_OFF_FULL_PATH);
-		offForms.add(httpOffForm);
-
-		JsonArray stateChangedForms = 
+		JsonArray detectedForms = 
 				td
 				.getJsonObject("events")
-				.getJsonObject(EVENT_STATE_CHANGED)
+				.getJsonObject("presenceDetected")
 				.getJsonArray("forms");
 
-		JsonObject httpStateChangedForm = new JsonObject();
-		httpStateChangedForm.put("href", "http://" + thingHost + ":" + thingPort + EVENTS_FULL_PATH);
-		stateChangedForms.add(httpStateChangedForm);
+		JsonObject httpDetForm = new JsonObject();
+		httpDetForm.put("href", "http://" + thingHost + ":" + thingPort + EVENTS_FULL_PATH);
+		detectedForms.add(httpDetForm);
+
+		JsonArray noMoreDetectedForms = 
+				td
+				.getJsonObject("events")
+				.getJsonObject("presenceNoMoreDetected")
+				.getJsonArray("forms");
+
+		JsonObject httpNoMoreDetForm = new JsonObject();
+		httpNoMoreDetForm.put("href", "http://" + thingHost + ":" + thingPort + EVENTS_FULL_PATH);
+		noMoreDetectedForms.add(httpNoMoreDetForm);
+	
 	}
 
-	protected void handleGetPropertyState(RoutingContext ctx) {
+	protected void handleGetDetected(RoutingContext ctx) {
 		HttpServerResponse res = ctx.response();
 		res.putHeader("Content-Type", "application/json");
 		JsonObject reply = new JsonObject();
-		Future<String> fut = this.getModel().getState();
+		Future<Boolean> fut = this.getModel().isDetected();
 		fut.onSuccess(status -> {
-			reply.put(PROPERTY_STATE, status);
+			reply.put(PROPERTY_PRESENCE_DETECTED, status);
 			res.end(reply.toBuffer());
 		});
 	}
@@ -173,26 +154,8 @@ public class LampThingHTTPAdapter extends ThingAbstractAdapter<LampThingAPI> {
 		});
 	}
 
-	protected void handleActionOn(RoutingContext ctx) {
-		HttpServerResponse res = ctx.response();
-		log("ON request.");
-		Future<Void> fut = this.getModel().on();
-		fut.onSuccess(ret -> {
-			res.setStatusCode(DONE).end();
-		});
-	}
-
-	protected void handleActionOff(RoutingContext ctx) {
-		HttpServerResponse res = ctx.response();
-		log("OFF request.");
-		Future<Void> fut = this.getModel().off();
-		fut.onSuccess(ret -> {
-			res.setStatusCode(DONE).end();
-		});
-	}
-
 	protected void log(String msg) {
-		System.out.println("[LampThingHTTPAdapter][" + System.currentTimeMillis() + "] " + msg);
+		System.out.println("[PresDetectHTTPAdapter][" + System.currentTimeMillis() + "] " + msg);
 	}
 
 }

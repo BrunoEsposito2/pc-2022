@@ -2,7 +2,9 @@
  * Simulator/mock for a light device
  * 
  */
-package lamp_thing.impl;
+package smart_room.distributed;
+
+import smart_room.*;
 
 public class LampDeviceSimulator implements LampDevice {
 

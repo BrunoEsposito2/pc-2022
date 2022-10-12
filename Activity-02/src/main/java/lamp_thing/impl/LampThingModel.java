@@ -6,7 +6,6 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import lamp_thing.api.LampThingAPI;
 
 /**
  * 

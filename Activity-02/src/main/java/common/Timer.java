@@ -5,8 +5,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import smart_room.AbstractEventSource;
-
 public class Timer extends AbstractEventSource {
 	
 	private ScheduledExecutorService sched;

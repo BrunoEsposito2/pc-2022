@@ -3,9 +3,6 @@ package common;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import smart_room.Controller;
-import smart_room.Event;
-
 public abstract class BasicEventLoopAgent extends Thread implements Controller {
 	
 	private String agentName;

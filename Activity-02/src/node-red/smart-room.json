@@ -1,0 +1,275 @@
+[
+    {
+        "id": "432aed9d072d14a0",
+        "type": "tab",
+        "label": "Smart Room",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "529cca0feef08934",
+        "type": "http request",
+        "z": "432aed9d072d14a0",
+        "name": "readDetected",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://localhost:8889/api/properties/presenceDetected",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 280,
+        "y": 200,
+        "wires": [
+            [
+                "6f11b5a1bd6af9ed"
+            ]
+        ]
+    },
+    {
+        "id": "1c5817a097a7eae8",
+        "type": "inject",
+        "z": "432aed9d072d14a0",
+        "d": true,
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 70,
+        "y": 200,
+        "wires": [
+            [
+                "8c766cf2a8e729aa",
+                "529cca0feef08934",
+                "ffc9de5077c82e2f"
+            ]
+        ]
+    },
+    {
+        "id": "8c766cf2a8e729aa",
+        "type": "http request",
+        "z": "432aed9d072d14a0",
+        "name": "readLightLevel",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://localhost:8890/api/properties/lightLevel",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 280,
+        "y": 120,
+        "wires": [
+            [
+                "e5edfe7b42a99d92"
+            ]
+        ]
+    },
+    {
+        "id": "ffc9de5077c82e2f",
+        "type": "http request",
+        "z": "432aed9d072d14a0",
+        "name": "readLampState",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://localhost:8888/api/properties/state",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 280,
+        "y": 280,
+        "wires": [
+            [
+                "5b3dc8477c29b2b6"
+            ]
+        ]
+    },
+    {
+        "id": "e5edfe7b42a99d92",
+        "type": "function",
+        "z": "432aed9d072d14a0",
+        "name": "update local knowledge about light level",
+        "func": "global.set(\"lightLevel\", msg.payload.lightLevel);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 120,
+        "wires": [
+            [
+                "2afd61ebb8798b2e",
+                "875248d7ac8d2535"
+            ]
+        ]
+    },
+    {
+        "id": "6f11b5a1bd6af9ed",
+        "type": "function",
+        "z": "432aed9d072d14a0",
+        "name": "update local knowledge about presence detected",
+        "func": "global.set('presenceDetected', msg.payload.presenceDetected);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 200,
+        "wires": [
+            [
+                "2afd61ebb8798b2e",
+                "875248d7ac8d2535"
+            ]
+        ]
+    },
+    {
+        "id": "5b3dc8477c29b2b6",
+        "type": "function",
+        "z": "432aed9d072d14a0",
+        "name": "update local knowledge about lamp state",
+        "func": "global.set(\"lampState\", msg.payload.state);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 280,
+        "wires": [
+            [
+                "2afd61ebb8798b2e",
+                "875248d7ac8d2535"
+            ]
+        ]
+    },
+    {
+        "id": "2afd61ebb8798b2e",
+        "type": "function",
+        "z": "432aed9d072d14a0",
+        "name": "deciding for turning off",
+        "func": "let pres = global.get('presenceDetected');\nlet lightLevel = global.get('lightLevel');\nlet lampState = global.get('lampState');\n\nif (lampState == 'on' && !pres){\n    var action = { payload: {\n            action: 'off' \n        }\n    }\n    return action;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 920,
+        "y": 280,
+        "wires": [
+            [
+                "9fa12fff41a951a1",
+                "97ed0bc7565c4c99"
+            ]
+        ]
+    },
+    {
+        "id": "9fa12fff41a951a1",
+        "type": "debug",
+        "z": "432aed9d072d14a0",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1100,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "3e3b2ce77aae4109",
+        "type": "http request",
+        "z": "432aed9d072d14a0",
+        "name": "turn on",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:8888/api/actions/on",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1180,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "875248d7ac8d2535",
+        "type": "function",
+        "z": "432aed9d072d14a0",
+        "name": "deciding for turning on",
+        "func": "let pres = global.get('presenceDetected');\nlet lightLevel = global.get('lightLevel');\nlet lampState = global.get('lampState');\n\nif (lampState == 'off' && pres && lightLevel < 0.2) {\n        var action = {\n                payload: {\n                        action: 'on'\n                }\n        }\n        return action;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 920,
+        "y": 120,
+        "wires": [
+            [
+                "9fa12fff41a951a1",
+                "3e3b2ce77aae4109"
+            ]
+        ]
+    },
+    {
+        "id": "97ed0bc7565c4c99",
+        "type": "http request",
+        "z": "432aed9d072d14a0",
+        "name": "turn off",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:8888/api/actions/off",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1180,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    }
+]
